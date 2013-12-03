@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="blast.js"></script>
+		<script type="text/javascript">
+			var sampleData1 = [
+				{ID: 1, Name: "Product 1", Description: "Lorem Ipsum"},
+				{ID: 2, Name: "Product 2", Description: "Lorem Ipsum"},
+				{ID: 3, Name: "Product 3", Description: "Lorem Ipsum"},
+				{ID: 4, Name: "Product 4", Description: "Lorem Ipsum"}
+			];
+			var model = null;
+			window.onload = function () {
+				init();
+			};
+
+			function init () {
+				model = blast.observe(sampleData1);
+				var table = document.getElementById("table1");
+				var ths = table.getElementsByTagName("th");
+				var trs = document.getElementsByTagName("tr");
+				for (var i = 0; i < trs.length; i++) {
+					var tds = trs[i].getElementsByTagName("input");
+					for (var j = 0; j < tds.length; j++) {
+						// this can be expressed in different ways
+						// default event binding is "onchange", no need to set any metadata in that case
+						blast.link(tds[j], {key: ths[j].innerHTML, event: "keyup"}, model[i - 1]);
+					}
+				}
+				blast.link(document.getElementById("cell00"), {key: "ID"}, model[0]);
+				blast.link(document.getElementById("cell01"), {key: "Name"}, model[0]);
+				blast.link(document.getElementById("cell02"), {key: "Description"}, model[0]);
+			}
+
+			function setVal () {
+				var row = document.getElementById("row");
+				var key = document.getElementById("key");
+				var val = document.getElementById("val");
+				console.log("setting value(" + val.value + ") for row:" + row.value + " ; key=" + key.value);
+				model[row.value][key.value](val);
+			}
+			function serialize () {
+				var d = blast.json(model);
+				document.getElementById("serialize_container").innerHTML = JSON.stringify(d);
+			}
+		</script>
+	</head>
+	<body>
+		<!--
+		<div>
+			<span>row: </span>
+			<input id="row" />
+		</div>
+		<div>
+			<span>key: </span>
+			<input id="key" />
+		</div>
+		<div>
+			<span>val: </span>
+			<input id="val" onchange="setVal();"/>
+		</div>
+		-->
+		<h3> You can see the UI update in real-time by changing a model value in the browser's console, for example model[0].Description("Blast is cool!")</h3>
+		<h4> When you change something in the UI, the corresponding view model fields get updated immediately</h4>
+		<h4> you can use any event when you link DOM to model - change, keyup, etc. The default is "onchange" </h4>
+		<table id="table1">
+			<thead>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr><td><input value="1"/></td><td><input value="Product 1"/></td><td><input value="Lorem Ipsum 1"/></td></tr>
+				<tr><td><input value="2"/></td><td><input value="Product 2"/></td><td><input value="Lorem Ipsum 2"/></td></tr>
+				<tr><td><input value="3"/></td><td><input value="Product 3"/></td><td><input value="Lorem Ipsum 3"/></td></tr>
+			</tbody>
+		</table>
+		<div><span>Cell (0,0) = </span><span id="cell00"></span></div>
+		<div><span> Cell (0,1) = </span><span id="cell01"></span></div>
+		<div><span> Cell (0,2) = </span><span id="cell02"></span></div>
+		<button id="serialize" onclick="serialize();">serialize current view model to JSON</button>
+		<div id="serialize_container"></div>
+	</body>
+</html>

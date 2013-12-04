@@ -3,7 +3,7 @@
  * Licensed under BSD 
  */
 (function (window, document) {
-	var blast = window.blast = window.blast || {};
+	var blast = window.blast = window.blast || {}, doc = document;
 	blast.observable = function (val) {
 		var current = val;
 		var ret = function (retVal) {
@@ -25,7 +25,7 @@
 	};
 	blast.observableArray = function (arr) { // not implemented
 	};
-	blast.link = function (elem, meta, data) {
+	blast.link = function (elem, meta, data) { // DOM => observables
 		var key = meta.key;
 		if (data[key].__bo) {
 			data[key].subs.push(function (val, oldVal) {
@@ -40,8 +40,16 @@
 				data[key] = newVal;
 			}
 		}
+		setval(elem, data[key].__bo ? data[key]() : data[key]); // init
 	};
-	blast.observe = function (data) {
+	blast.linkAll = function (prop, meta, model) {
+		var elems = elem(prop, meta.parent);
+		for (var i = 0; i < elems.length; i++) {
+			meta.key = prop;
+			blast.link(elems[i], meta, model);
+		}
+	};
+	blast.observe = function (data) { // data is a plain js object/array
 		if (undef(data)) {
 			return null;
 		}
@@ -53,6 +61,26 @@
 			return observed;
 		}
 		return observeObj(data);
+	};
+	blast.bind = function (model, meta) { //two-way: HTML <=> Model
+		var m = undef(meta) ? {} : meta;
+		for (var p in model) {
+			if (model.hasOwnProperty(p)) { //TODO: handle scope
+				if (model[p] instanceof Array) { //also recurse
+					var arr = model[p];
+					var dom = elem(p)[0];//TODO elem() returning > 1
+					var tmpl = dom.firstElementChild.cloneNode(true);
+					clear(dom);
+					for (var i = 0; i < arr.length; i++) {
+						var item = tmpl.cloneNode(true);
+						dom.appendChild(item);
+						blast.bind(arr[i], {parent: item});
+					}
+				} else {
+					blast.linkAll(p, m, model);
+				}
+			}
+		}
 	};
 	// convert model to plain js objects
 	blast.json = function (model) {
@@ -98,6 +126,15 @@
 			return elem.value;
 		}
 		return elem.innerHTML; //TODO: parse inner content
+	}
+	function elem(prop, parent) {
+		var root = parent ? parent : doc;
+		return root.querySelectorAll("[data-bind=" + prop + "]");
+	}
+	function clear(elem) {
+		while (elem.firstChild) {
+    		elem.removeChild(elem.firstChild);
+		}
 	}
 	function undef(val) {
 		return val === null || typeof (val) === "undefined";

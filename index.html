@@ -2,6 +2,21 @@
 <html>
 	<head>
 		<script type="text/javascript" src="blast.js"></script>
+		<style type="text/css">
+			body {
+				font-family: Verdana;
+				background-color: #cccccc;
+			}
+			table {
+				border: 1px solid black;
+			}
+			tr {
+				border: 1px solid black;
+			}
+			input {
+				border: 1px solid black;
+			}
+		</style>
 		<script type="text/javascript">
 			var sampleData1 = [
 				{ID: 1, Name: "Product 1", Description: "Lorem Ipsum"},
@@ -9,7 +24,7 @@
 				{ID: 3, Name: "Product 3", Description: "Lorem Ipsum"},
 				{ID: 4, Name: "Product 4", Description: "Lorem Ipsum"}
 			];
-			var model = null;
+			var model = null, nameModel, customersModel;
 			window.onload = function () {
 				init();
 			};
@@ -30,6 +45,19 @@
 				blast.link(document.getElementById("cell00"), {key: "ID"}, model[0]);
 				blast.link(document.getElementById("cell01"), {key: "Name"}, model[0]);
 				blast.link(document.getElementById("cell02"), {key: "Description"}, model[0]);
+				nameModel = {
+					firstName: blast.observable("Chuck"),
+					lastName: blast.observable("Norris")
+				};
+				customersModel = {
+					customers: [
+						{firstName: blast.observable("Angel"), lastName: blast.observable("Todorov")},
+						{firstName: blast.observable("Chuck"), lastName: blast.observable("Norris")},
+						{firstName: blast.observable("Johhny"), lastName: blast.observable("Bravo")}
+					]
+				};
+				blast.bind(nameModel);
+				blast.bind(customersModel);
 			}
 
 			function setVal () {
@@ -63,22 +91,54 @@
 		<h3> You can see the UI update in real-time by changing a model value in the browser's console, for example model[0].Description("Blast is cool!")</h3>
 		<h4> When you change something in the UI, the corresponding view model fields get updated immediately</h4>
 		<h4> you can use any event when you link DOM to model - change, keyup, etc. The default is "onchange" </h4>
-		<table id="table1">
-			<thead>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Description</th>
-			</thead>
-			<tbody>
-				<tr><td><input value="1"/></td><td><input value="Product 1"/></td><td><input value="Lorem Ipsum 1"/></td></tr>
-				<tr><td><input value="2"/></td><td><input value="Product 2"/></td><td><input value="Lorem Ipsum 2"/></td></tr>
-				<tr><td><input value="3"/></td><td><input value="Product 3"/></td><td><input value="Lorem Ipsum 3"/></td></tr>
-			</tbody>
-		</table>
-		<div><span>Cell (0,0) = </span><span id="cell00"></span></div>
-		<div><span> Cell (0,1) = </span><span id="cell01"></span></div>
-		<div><span> Cell (0,2) = </span><span id="cell02"></span></div>
+		<hr/>
+		<p>
+			<h3> Working with input fields (Declarative binding in markup) </h3>
+			<div>
+				<span>First Name:</span> <input data-bind="firstName"/>
+				<span>Bound value (firstName): </span><span data-bind="firstName"/>
+			</div>
+			<div>
+				<span>Last Name:</span> <input data-bind="lastName"/>
+				<span>Bound value (lastName): </span><span data-bind="lastName"/>
+			</div>
+		</p>
+		<hr/>
+		<p>
+			<h3> Working with tables - binding programatically with JS</h3>
+			<table id="table1">
+				<thead>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Description</th>
+				</thead>
+				<tbody>
+					<tr><td><input value="1"/></td><td><input value="Product 1"/></td><td><input value="Lorem Ipsum 1"/></td></tr>
+					<tr><td><input value="2"/></td><td><input value="Product 2"/></td><td><input value="Lorem Ipsum 2"/></td></tr>
+					<tr><td><input value="3"/></td><td><input value="Product 3"/></td><td><input value="Lorem Ipsum 3"/></td></tr>
+				</tbody>
+			</table>
+			<div><span>Cell (0,0) = </span><span id="cell00"></span></div>
+			<div><span> Cell (0,1) = </span><span id="cell01"></span></div>
+			<div><span> Cell (0,2) = </span><span id="cell02"></span></div>
+		</p>
 		<button id="serialize" onclick="serialize();">serialize current view model to JSON</button>
 		<div id="serialize_container"></div>
+		<hr/>
+		<p>
+			<h3> Working with tables - binding declaratively with templates </h3>
+			<h4> try doing this in the console: <i>customersModel.customers[0].firstName("new name");</i> </h4>
+			<table>
+				<thead>
+					<tr><th>First name</th><th>Last name</th></tr>
+				</thead>
+				<tbody data-bind="customers">
+					<tr>
+						<td data-bind="firstName"></td>
+						<td data-bind="lastName"></td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
 	</body>
 </html>

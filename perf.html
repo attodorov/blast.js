@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="blast.js"></script>
+		<script type="text/javascript">
+			window.onload = function () {
+				var bigData = [];
+				for (var i = 0; i < 5000; i++) {
+					//bigData.push({prop1: blast.observable("Prop1"  + i) , prop2: blast.observable("bProp2" + i), prop3: blast.observable("Prop3" + i)});
+					bigData.push({prop1: "Prop1"  + i , prop2: "bProp2" + i, prop3: "Prop3" + i});
+				}
+				perfModel = {
+					bigdata: bigData
+				};
+				var start = new Date().getTime();
+				blast.bind(perfModel);
+				var end = new Date().getTime() - start;
+				document.getElementById("result").innerHTML = "It took: " + end + "ms";
+			};
+		</script>
+	</head>
+	<body>
+		<h2> Data-binding to 500 table rows</h2>
+		<span id="result" style="color:green;"></span>
+		<table>
+			<tbody data-bind="bigdata">
+				<tr>
+					<td data-bind="prop1"></td>
+					<td data-bind="prop2"></td>
+					<td data-bind="prop3"></td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

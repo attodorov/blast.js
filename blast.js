@@ -14,9 +14,8 @@
 				}
 				current = retVal;
 				return this;
-			} else {
-				return current;
 			}
+			return current;
 		};
 		ret.subs = [];
 		ret._val = val;
@@ -52,9 +51,8 @@
 				observed.push(observeObj(data[i]));
 			}
 			return observed;
-		} else {
-			return observeObj(data);
 		}
+		return observeObj(data);
 	};
 	// convert model to plain js objects
 	blast.json = function (model) {
@@ -98,9 +96,8 @@
 	function getval(elem) {
 		if (elem.hasOwnProperty("value")) {
 			return elem.value;
-		} else {
-			return elem.innerHTML; //TODO: parse inner content 
 		}
+		return elem.innerHTML; //TODO: parse inner content
 	}
 	function undef(val) {
 		return val === null || typeof (val) === "undefined";

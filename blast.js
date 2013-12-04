@@ -34,8 +34,7 @@
 			});
 		}
 		elem["on" + (meta.event ? meta.event : "change")] = function () {
-			var newVal = null;
-				newVal = getval(elem);
+			var newVal = getval(elem);
 			if (data[key].__bo) { // assume observable
 				data[key](newVal);
 			} else {

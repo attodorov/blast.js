@@ -7,7 +7,7 @@
 	blast.observable = function (val) {
 		var current = val;
 		var ret = function (retVal) {
-			if (retVal && retVal !== this._val) {
+			if (!undef(retVal) && retVal !== this._val) {
 				//notify subscribers
 				for (var i = 0; i < ret.subs.length; i++) {
 					ret.subs[i](retVal, ret._val);
@@ -32,15 +32,17 @@
 				setval(elem, val);
 			});
 		}
-		elem["on" + (meta.event ? meta.event : "change")] = function () {
+		elem.addEventListener(meta.event ? meta.event : "change", function () {
 			var newVal = getval(elem);
 			if (data[key].__bo) { // assume observable
 				data[key](newVal);
 			} else {
 				data[key] = newVal;
 			}
+		}, false);
+		if (undef(meta) || (meta && meta.init !== false)) {
+			setval(elem, data[key].__bo ? data[key]() : data[key]); // init
 		}
-		setval(elem, data[key].__bo ? data[key]() : data[key]); // init
 	};
 	blast.linkAll = function (prop, meta, model) {
 		var elems = elem(prop, meta.parent);
@@ -115,14 +117,14 @@
 		return obj;
 	}
 	function setval(elem, val) {
-		if (elem.hasOwnProperty("value")) {
+		if (elem instanceof HTMLInputElement) {
 			elem.value = val;
 		} else {
 			elem.innerHTML = val;
 		}
 	}
 	function getval(elem) {
-		if (elem.hasOwnProperty("value")) {
+		if (elem instanceof HTMLInputElement) {
 			return elem.value;
 		}
 		return elem.innerHTML; //TODO: parse inner content

@@ -76,7 +76,8 @@
 					for (var i = 0; i < arr.length; i++) {
 						var item = tmpl.cloneNode(true);
 						dom.appendChild(item);
-						blast.bind(arr[i], {parent: item});
+						m.parent = item;
+						blast.bind(arr[i], m);
 					}
 				} else {
 					blast.linkAll(p, m, model);

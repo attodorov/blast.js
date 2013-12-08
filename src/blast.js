@@ -55,8 +55,8 @@
 		if (undef(data)) {
 			return null;
 		}
-		if (data instanceof Array) { //array
-			observed = [];
+		if (Array.isArray(data)) {
+			var observed = [];
 			for (var i = 0; i < data.length; i++) {
 				observed.push(observeObj(data[i]));
 			}
@@ -68,7 +68,7 @@
 		var m = undef(meta) ? {} : meta;
 		for (var p in model) {
 			if (model.hasOwnProperty(p)) { //TODO: handle scope
-				if (model[p] instanceof Array) { //also recurse
+				if (Array.isArray(model[p])) { //also recurse
 					var arr = model[p];
 					var dom = elem(p)[0];//TODO elem() returning > 1
 					var tmpl = dom.firstElementChild.cloneNode(true);
@@ -90,7 +90,7 @@
 		if (undef(model)) {
 			return null;
 		}
-		if (model instanceof Array) {
+		if (Array.isArray(model)) {
 			var d = [];
 			for (var i = 0; i < model.length; i++) {
 				d.push(toObj(model[i]));

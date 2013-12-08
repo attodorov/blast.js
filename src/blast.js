@@ -39,7 +39,7 @@
 			} else {
 				data[key] = newVal;
 			}
-		}, false);
+		}, false); //don't bubble
 		if (undef(meta) || (meta && meta.init !== false)) {
 			setval(elem, data[key].__bo ? data[key]() : data[key]); // init
 		}

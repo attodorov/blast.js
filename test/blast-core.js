@@ -7,9 +7,16 @@ var assert = require("chai").assert;
 var expect = require("chai").expect;
 var should = require("chai").should();
 var chai = require("chai");
+var requirejs = require("requirejs");
 chai.Assertion.includeStack = true;
-var fs = require("fs");
-var html = fs.readFileSync("test/template.html", "utf8");
+
+requirejs.config({
+        nodeRequire: require,
+        baseUrl: "./src/"
+});
+
+//var fs = require("fs");
+//var html = fs.readFileSync("test/template.html", "utf8");
 jsdom.defaultDocumentFeatures = { 
 	FetchExternalResources   : ["script"],
 	ProcessExternalResources : ["script"],
@@ -18,15 +25,17 @@ jsdom.defaultDocumentFeatures = {
 };
 // load our sample and we'll test core functionality on it, no need to develop that stuff again
 var window, doc, donefn, started = false, blast;
-doc = jsdom.jsdom(html);
+doc = jsdom.jsdom("<!DOCTYPE html><html><head></head><body></body></html>");
 window = doc.createWindow();
-
+GLOBAL.window = window;
+GLOBAL.document = doc;
+blast = requirejs("blast");
 window.addEventListener("load", function () {
 	if (donefn) {
 		donefn(); // start tests
 	}
 	started = true;
-	blast = window.blast;
+	//blast = window.blast;
 });
 before(function (done) {
 	donefn = done;

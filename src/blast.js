@@ -118,14 +118,14 @@
 		return obj;
 	}
 	function setval(elem, val) {
-		if (elem instanceof HTMLInputElement) {
+		if (elem instanceof window.HTMLInputElement) {
 			elem.value = val;
 		} else {
 			elem.innerHTML = val;
 		}
 	}
 	function getval(elem) {
-		if (elem instanceof HTMLInputElement) {
+		if (elem instanceof window.HTMLInputElement) {
 			return elem.value;
 		}
 		return elem.innerHTML; //TODO: parse inner content
@@ -143,3 +143,9 @@
 		return val === null || typeof (val) === "undefined";
 	}
 }) (window, document);
+//Support for AMD
+if ( typeof define === "function" && define.amd ) {
+    define( "blast", [], function() {
+        return window.blast;
+    });
+}

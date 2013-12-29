@@ -71,7 +71,7 @@
 				if (Array.isArray(model[p])) { //also recurse
 					var arr = model[p];
 					var dom = elem(p)[0];//TODO elem() returning > 1
-					var tmpl = dom.firstElementChild.cloneNode(true);
+					var tmpl = (dom.firstElementChild || dom.children[0]).cloneNode(true);
 					clear(dom);
 					for (var i = 0; i < arr.length; i++) {
 						var item = tmpl.cloneNode(true);

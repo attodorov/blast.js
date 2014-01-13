@@ -143,9 +143,13 @@
 		return val === null || typeof (val) === "undefined";
 	}
 }) (window, document);
-//Support for AMD
+//Support for AMD (RequireJS)
 if ( typeof define === "function" && define.amd ) {
     define( "blast", [], function() {
         return window.blast;
     });
+}
+// support for CommonJS (Node)
+ if (typeof module !== 'undefined' && module.exports) {
+	module.exports = window.blast; // works only if window is defined (JSDOM, etc.)
 }

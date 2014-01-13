@@ -4,6 +4,7 @@
   "title": "Blast.JS",
   "description": "A tiny, blazing fast two-way databinding JavaScript library",
   "main": "src/blast.js",
+  "keywords": ["databinding", "templating", "two-way databinding", "observable", "observe"],
   "ignore": [
     ".jshintrc",
     "**/*.txt"

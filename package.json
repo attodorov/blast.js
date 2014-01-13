@@ -1,7 +1,18 @@
 {
+	"name": "Blast.JS",
+	"title": "Blast.JS",
+	"description": "A tiny, blazing fast two-way databinding JavaScript library",
+	"version": "0.1.0",
+	"repository": {
+	"type": "git",
+	"url": "https://github.com/attodorov/blast.js.git"
+	},
+	"engine": "node >= 0.10.5",
+	"keywords": ["databinding", "templating", "two-way databinding", "observable", "observe"],
 	"devDependencies": {
 	  "jsdom": "*",
 	  "chai": "*",
-	  "mocha": "*"
+	  "mocha": "*",
+	  "requirejs": "*"
 	}
 }

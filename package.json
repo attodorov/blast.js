@@ -1,5 +1,5 @@
 {
-	"name": "Blast.JS",
+	"name": "blast",
 	"title": "Blast.JS",
 	"description": "A tiny, blazing fast two-way databinding JavaScript library",
 	"version": "0.1.0",

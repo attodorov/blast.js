@@ -1,0 +1,20 @@
+{
+  "name": "blast",
+  "version": "0.1.0",
+  "title": "Blast.JS",
+  "description": "A tiny, blazing fast two-way databinding JavaScript library",
+  "main": "src/blast.min.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "jsdom": "latest",
+    "chai": "latest",
+    "requirejs": "latest"
+  }
+}

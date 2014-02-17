@@ -2,20 +2,26 @@
  * Copyright Angel Todorov (attodorov@gmail.com)
  * Licensed under BSD 
  */
+"use strict";
 (function (window, document) {
 	var blast = window.blast = window.blast || {}, doc = document;
+	var _arrextend = ["pop", "push", "reverse", "shift", "sort", "splice", "unshift"];
 	blast.observable = function (val) {
 		var current = val;
 		var ret = function (retVal) {
-			if (!undef(retVal) && retVal !== this._val) {
+			if (!undef(retVal) && retVal !== ret._val) {
 				//notify subscribers
-				for (var i = 0; i < ret.subs.length; i++) {
-					ret.subs[i](retVal, ret._val);
-				}
+				ret.notify();
 				current = retVal;
-				return this;
+				ret.notify(true);
+				return ret;
 			}
 			return current;
+		};
+		ret.notify = function (end) {
+			for (var i = 0; i < ret.subs.length; i++) {
+				ret.subs[i](current, !end ? true : false);
+			}
 		};
 		ret.subs = [];
 		ret._val = val;
@@ -23,13 +29,30 @@
 		ret(val);
 		return ret;
 	};
-	blast.observableArray = function (arr) { // not implemented
+	blast.observableArray = function (arr) {
+		arr = arr || [];
+		var i;
+		var observableArr = blast.observable(arr);
+		var _compilefn = function (fn) {
+			return function () {
+				observableArr.notify();
+				var ret = observableArr._val[fn].apply(observableArr._val, arguments);
+				observableArr.notify(true);
+				return ret;
+			};
+		};
+		for (i = 0; i < _arrextend.length; i++) {
+			observableArr[_arrextend[i]] = _compilefn(_arrextend[i]);
+		}
+		return observableArr;
 	};
 	blast.link = function (elem, meta, data) { // DOM => observables
 		var key = meta.key;
 		if (data[key].__bo) {
-			data[key].subs.push(function (val, oldVal) {
-				setval(elem, val);
+			data[key].subs.push(function (val, beforeEvent) {
+				if (!beforeEvent) {
+					setval(elem, val);
+				}
 			});
 		}
 		elem.addEventListener(meta.event ? meta.event : "change", function () {
@@ -136,7 +159,7 @@
 	}
 	function clear(elem) {
 		while (elem.firstChild) {
-    		elem.removeChild(elem.firstChild);
+			elem.removeChild(elem.firstChild);
 		}
 	}
 	function undef(val) {
@@ -144,12 +167,12 @@
 	}
 }) (window, document);
 //Support for AMD (RequireJS)
-if ( typeof define === "function" && define.amd ) {
-    define( "blast", [], function() {
+if (typeof define === "function" && define.amd) {
+    define( "blast", [], function () {
         return window.blast;
     });
 }
 // support for CommonJS (Node)
- if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
 	module.exports = window.blast; // works only if window is defined (JSDOM, etc.)
 }

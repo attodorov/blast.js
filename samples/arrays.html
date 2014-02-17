@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Working with observable Arrays</title>
+		<script type="text/javascript" src="../src/blast.js"></script>
+		<style type="text/css">
+			body {
+				font-family: Verdana;
+				background-color: #cccccc;
+			}
+			table {
+				border: 1px solid black;
+			}
+			tr {
+				border: 1px solid black;
+			}
+			input {
+				border: 1px solid black;
+			}
+		</style>
+		<script type="text/javascript">
+			var sampleData1 = [
+				{ID: 1, Name: "Product 1", Description: "Lorem Ipsum"},
+				{ID: 2, Name: "Product 2", Description: "Lorem Ipsum"},
+				{ID: 3, Name: "Product 3", Description: "Lorem Ipsum"},
+				{ID: 4, Name: "Product 4", Description: "Lorem Ipsum"}
+			];
+			var model = null;
+			window.addEventListener("load", init);
+			function init () {
+				var subFn = function (val, beforeChange) {
+					alert("val: " + val.length + " ; before: "  + beforeChange);
+				};
+				// creating an empty observable array and manipulating it
+				var blastArray = blast.observableArray();
+				blastArray.subs.push(subFn);
+				blastArray.push("Array item 1");
+				//blastArray.push("Array item 2");
+				//blastArray.pop();
+				var blastProp = blast.observable("val 1");
+				//blastProp.subs.push(subFn);
+				blastProp("val 2");
+				// creating an observable array by passing an already existing array
+				var blastArray2 = blast.observableArray(sampleData1);
+			}
+
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

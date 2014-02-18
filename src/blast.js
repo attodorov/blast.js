@@ -11,16 +11,16 @@
 		var ret = function (retVal) {
 			if (!undef(retVal) && retVal !== ret._val) {
 				//notify subscribers
-				ret.notify();
+				ret.notify(false);
 				current = retVal;
 				ret.notify(true);
 				return ret;
 			}
 			return current;
 		};
-		ret.notify = function (end) {
+		ret.notify = function (end, action) {
 			for (var i = 0; i < ret.subs.length; i++) {
-				ret.subs[i](current, !end ? true : false);
+				ret.subs[i](current, !end ? true : false, action);
 			}
 		};
 		ret.subs = [];
@@ -35,9 +35,9 @@
 		var observableArr = blast.observable(arr);
 		var _compilefn = function (fn) {
 			return function () {
-				observableArr.notify();
+				observableArr.notify(false, fn);
 				var ret = observableArr._val[fn].apply(observableArr._val, arguments);
-				observableArr.notify(true);
+				observableArr.notify(true, fn);
 				return ret;
 			};
 		};
@@ -89,18 +89,56 @@
 	};
 	blast.bind = function (model, meta) { //two-way: HTML <=> Model
 		var m = undef(meta) ? {} : meta;
+		var addItem = function (parent, tmpl, meta, prepend) {
+			var item = tmpl.cloneNode(true);
+			if (prepend) {
+				parent.insertBefore(item, parent.firstChild);
+			} else {
+				parent.appendChild(item);
+			}
+			meta.parent = item;
+		};
 		for (var p in model) {
 			if (model.hasOwnProperty(p)) { //TODO: handle scope
-				if (Array.isArray(model[p])) { //also recurse
-					var arr = model[p];
+				var prop = model[p];
+				if (Array.isArray(prop) || (prop.__bo && Array.isArray(prop()))) { //also recurse
 					var dom = elem(p)[0];//TODO elem() returning > 1
 					var tmpl = (dom.firstElementChild || dom.children[0]).cloneNode(true);
 					clear(dom);
-					for (var i = 0; i < arr.length; i++) {
-						var item = tmpl.cloneNode(true);
-						dom.appendChild(item);
-						m.parent = item;
-						blast.bind(arr[i], m);
+					if (prop.__bo) { // listen for array notifications
+						prop.subs.push(function (arr, before, action) {
+							if (!before) { // transaction log, order, batch, etc. ? 
+								switch (action) {
+									case "push":
+										addItem(dom, tmpl, m);
+										blast.bind(arr[arr.length - 1], m);
+										break;
+									case "pop":
+										dom.removeChild(dom.lastChild);
+										break;
+									case "shift":
+										dom.removeChild(dom.firstChild);
+										break;
+									case "unshift":
+										addItem(dom, tmpl, m, true);
+										blast.bind(arr[0], m);
+										break;
+									case "splice":
+										//TODO: check how many items have been added (by comparing prev.length to new.length) & do add
+										break;
+									case "sort":
+										// rebind the whole array
+										break;
+									default:
+										break;
+								}
+							}
+						});
+						prop = prop();
+					}
+					for (var i = 0; i < prop.length; i++) {
+						addItem(dom, tmpl, m);
+						blast.bind(prop[i], m);
 					}
 				} else {
 					blast.linkAll(p, m, model);

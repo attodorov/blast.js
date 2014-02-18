@@ -25,27 +25,43 @@
 				{ID: 3, Name: "Product 3", Description: "Lorem Ipsum"},
 				{ID: 4, Name: "Product 4", Description: "Lorem Ipsum"}
 			];
-			var model = null;
+			var model = null, products, productsModel;
 			window.addEventListener("load", init);
 			function init () {
 				var subFn = function (val, beforeChange) {
-					alert("val: " + val.length + " ; before: "  + beforeChange);
+					//alert("val: " + val.length + " ; before: "  + beforeChange);
 				};
 				// creating an empty observable array and manipulating it
-				var blastArray = blast.observableArray();
-				blastArray.subs.push(subFn);
-				blastArray.push("Array item 1");
+				//var blastArray = blast.observableArray();
+				//blastArray.subs.push(subFn);
+				//blastArray.push("Array item 1");
 				//blastArray.push("Array item 2");
 				//blastArray.pop();
-				var blastProp = blast.observable("val 1");
+				//var blastProp = blast.observable("val 1");
 				//blastProp.subs.push(subFn);
-				blastProp("val 2");
+				//blastProp("val 2");
 				// creating an observable array by passing an already existing array
-				var blastArray2 = blast.observableArray(sampleData1);
+				products = blast.observableArray(blast.observe(sampleData1));
+					productsModel = {
+					"products": products
+				};
+				blast.bind(productsModel);
 			}
 
 		</script>
 	</head>
 	<body>
+		<table>
+			<thead>
+				<tr><th>Product ID</th><th>Product Name</th><th>Product Description</th></tr>
+			</thead>
+			<tbody data-bind="products">
+				<tr>
+					<td data-bind="ID"></td>
+					<td data-bind="Name"></td>
+					<td data-bind="Description"></td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </html>

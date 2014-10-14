@@ -41,6 +41,9 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
+		instrument: {
+
+		},
 		mochaTest: {
 			test: {
 				options: {
@@ -48,9 +51,12 @@ module.exports = function( grunt ) {
 					quiet: false
 				},
 				src: ['test/**/*.js']
+			},
+			perfTest: {
+				src: ['perftest/**/*.js']
 			}
 		}
 	});
 	grunt.registerTask('default', ['uglify', 'mochaTest']);
-	grunt.registerTask('test', ['uglify', 'mochaTest']);
+	grunt.registerTask('test', ['uglify', 'instrument', 'mochaTest']);
 };

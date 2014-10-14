@@ -40,6 +40,16 @@ module.exports = function( grunt ) {
 					"<%= config.dist %>/blast.min.js": ["<%= config.dev %>/blast.js"]
 				}
 			}
+		},
+		mochaTest: {
+			test: {
+				options: {
+					reporter: 'spec',
+					quiet: false
+				},
+				src: ['test/**/*.js']
+			}
 		}
 	});
+	grunt.registerTask('default', ['uglify', 'mochaTest']);
 };

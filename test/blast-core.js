@@ -8,7 +8,7 @@ var expect = require("chai").expect;
 var should = require("chai").should();
 var chai = require("chai");
 var requirejs = require("requirejs");
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 
 requirejs.config({
         nodeRequire: require,
@@ -26,7 +26,7 @@ jsdom.defaultDocumentFeatures = {
 // load our sample and we'll test core functionality on it, no need to develop that stuff again
 var window, doc, donefn, started = false, blast;
 doc = jsdom.jsdom("<!DOCTYPE html><html><head></head><body></body></html>");
-window = doc.createWindow();
+window = doc.parentWindow;
 GLOBAL.window = window;
 GLOBAL.document = doc;
 blast = requirejs("blast");

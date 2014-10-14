@@ -80,7 +80,7 @@ describe("Observing a JSON array", function () {
 		expect(model[0].Name).to.be.a("function");
 		expect(model[0].Description).to.be.a("function");
 
-		expect(model[0].ID).to.have.a.property("__bo");
+		expect(model[0].ID).to.have.a.property("__bo22");
 		expect(model[0].Name).to.have.a.property("__bo");
 		expect(model[0].Description).to.have.a.property("__bo");
 	})

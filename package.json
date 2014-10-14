@@ -21,5 +21,8 @@
 		"time-grunt": "~0.1.1",
 		"load-grunt-tasks": "~0.1.0",
 		"jshint-stylish": "~0.1.4"
+	},
+	"scripts": {
+  		"test": "grunt test"
 	}
 }

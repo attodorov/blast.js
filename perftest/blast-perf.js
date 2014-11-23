@@ -76,11 +76,11 @@ for (var i = 0; i < 10000; i++) {
 
 describe("Make sure performance is good", function () {
 	this.timeout(50000);
-	it("should be able to observe 100000 rows in no more than 2 sec", function () {
+	it("should be able to observe 100000 rows in no more than 5 sec", function () {
 		var model = blast.observe(sampleData);
 		perf = window._p;
 		// now check the avg bind time for a record. Note that it's not possible to do that without manually putting statements in the blast code
-		expect(perf["blast.observe"].sum).to.be.lessThan(2000);
+		expect(perf["blast.observe"].sum).to.be.lessThan(5000);
 		// check how much binding 100000 rows took
 
 		// fail if the maximum bind for a single record is larger than some value (this way we can detect if there is specific data that makes binding slow)

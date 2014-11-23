@@ -41,8 +41,12 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		instrument: {
-
+		cheetah: {
+			dist: {
+				files: {
+					"<%= config.dist %>/blast.gen.js": ["<%= config.dev %>/blast.js"]
+				}
+			}
 		},
 		mochaTest: {
 			test: {
@@ -50,13 +54,20 @@ module.exports = function( grunt ) {
 					reporter: 'spec',
 					quiet: false
 				},
-				src: ['test/**/*.js']
-			},
-			perfTest: {
+				src: ['test/**/*.js', 'perftest/**/*.js']
+			}
+		},
+		mochaPerfTest: {
+			test: {
+				options: {
+					reporter: 'spec',
+					quiet: false
+				},
 				src: ['perftest/**/*.js']
 			}
 		}
 	});
 	grunt.registerTask('default', ['uglify', 'mochaTest']);
-	grunt.registerTask('test', ['uglify', 'mochaTest']);
+	grunt.registerTask('test', ['uglify', 'cheetah', 'mochaTest']);
+	//grunt.registerTask('perftest', ['uglify', 'cheetah', 'mochaPerfTest']);
 };

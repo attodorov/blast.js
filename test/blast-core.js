@@ -8,7 +8,7 @@ var expect = require("chai").expect;
 var should = require("chai").should();
 var chai = require("chai");
 var requirejs = require("requirejs");
-chai.config.includeStack = true;
+//chai.config.includeStack = true;
 
 requirejs.config({
         nodeRequire: require,

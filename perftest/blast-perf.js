@@ -8,6 +8,7 @@ var expect = require("chai").expect;
 var should = require("chai").should();
 var chai = require("chai");
 var requirejs = require("requirejs");
+var Parse = require("parse").Parse;
 //chai.config.includeStack = true;
 
 requirejs.config({
@@ -76,16 +77,52 @@ for (var i = 0; i < 10000; i++) {
 
 describe("Make sure performance is good", function () {
 	this.timeout(50000);
-	it("should be able to observe 100000 rows in no more than 5 sec", function () {
+	it("should be able to observe 10000 rows in no less time than the previous run", function (done) {
 		var model = blast.observe(sampleData);
 		perf = window._p;
+		Parse.initialize("8xnXEIVSc0KBeeDoEHNXKFPwnqQIVHfewNTNKOIO", "vbk4WiXQDzzBF28UQFeTn6tmxsaM73U9i6qDzqAz");
+		var TestRun = Parse.Object.extend("TestRun");
+		var query = new Parse.Query(TestRun);
+		var time = perf["blast.observe"].sum;
+
+		var newTestRun = new TestRun();
+		newTestRun.set("key", "observe_100000_rows");
+		newTestRun.set("time", time);
+		query.find({
+			success: function (testRuns) {
+				if (!testRuns || testRuns.length === 0) {
+					newTestRun.save(null, {
+						success: function (run) {
+							// pass the test
+							done();
+						}
+					});
+				} else {
+					// compare to the previous one
+					var lastRun = testRuns[testRuns.length - 1];
+					if (lastRun.get("time") < time) {
+						assert.fail(time, lastRun.get("time"), "Last test run's duration was significantly smaller than the current one. ");
+					} else {
+						newTestRun.save(null, {
+							success: function (run) {
+								done();
+							},
+							error: function (run, error) {
+								console.log("Could not save object");
+								assert.fail();
+							}
+						});
+					}
+					// you can also say, if the last 3 runs... or if the last 5 runs are CONSISTENLY FASTER.
+				}
+			}
+		});
 		// now check the avg bind time for a record. Note that it's not possible to do that without manually putting statements in the blast code
-		expect(perf["blast.observe"].sum).to.be.lessThan(5000);
+		//expect(perf["blast.observe"].sum).to.be.lessThan(5000);
 		// check how much binding 100000 rows took
 
 		// fail if the maximum bind for a single record is larger than some value (this way we can detect if there is specific data that makes binding slow)
 		// such as nested bindings, etc. ? (depending on your app logic)
-
 
 	});
 	// now lets look at something more interesting. Check how much this takes.

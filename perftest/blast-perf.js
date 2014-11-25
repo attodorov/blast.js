@@ -88,6 +88,7 @@ describe("Make sure performance is good", function () {
 		var newTestRun = new TestRun();
 		newTestRun.set("key", "observe_100000_rows");
 		newTestRun.set("time", time);
+
 		query.find({
 			success: function (testRuns) {
 				if (!testRuns || testRuns.length === 0) {
@@ -98,10 +99,10 @@ describe("Make sure performance is good", function () {
 						}
 					});
 				} else {
-					// compare to the previous one
+					// compare to the average of the previous one
 					var lastRun = testRuns[testRuns.length - 1];
-					if (lastRun.get("time") < time) {
-						assert.fail(time, lastRun.get("time"), "Last test run's duration was significantly smaller than the current one. ");
+					if (lastRun.get("time") + 0.2 * lastRun.get("time") < time) {
+						assert.ok(time <= lastRun.get("time") + 0.2 * lastRun.get("time"), "Last test run's duration was significantly smaller than the current one. ");
 					} else {
 						newTestRun.save(null, {
 							success: function (run) {
@@ -117,41 +118,5 @@ describe("Make sure performance is good", function () {
 				}
 			}
 		});
-		// now check the avg bind time for a record. Note that it's not possible to do that without manually putting statements in the blast code
-		//expect(perf["blast.observe"].sum).to.be.lessThan(5000);
-		// check how much binding 100000 rows took
-
-		// fail if the maximum bind for a single record is larger than some value (this way we can detect if there is specific data that makes binding slow)
-		// such as nested bindings, etc. ? (depending on your app logic)
-
 	});
-	// now lets look at something more interesting. Check how much this takes.
-	/*
-		<table>
-			<tbody data-bind="bigdata">
-				<tr>
-					<td data-bind="prop1"></td>
-					<td data-bind="prop2"></td>
-					<td data-bind="prop3"></td>
-				</tr>
-			</tbody>
-		</table>
-
-		perfModel = {
-			bigdata: bigData
-		};
-		blast.bind(perfModel);
-	*/
-	it("Should two-way bind to a model and render a HTML table for all rows in no more than 2 sec", function () {
-
-		// YOU CAN'T MEASURE THIS with new Date().getTime() and so on. 
-
-		// rendering shouldn't take more than XXX sec.
-
-		// rendering for a single record shouldn't take more than ... 
-
-		// why not use Benchmark.Js - well... you can't. Using that you can only measure how much the bind() tool for ALL records
-
-	});
-
 })

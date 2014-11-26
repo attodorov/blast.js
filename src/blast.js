@@ -81,7 +81,6 @@
 		if (Array.isArray(data)) {
 			var observed = [];
 			for (var i = 0; i < data.length; i++) {
-				var observedObj = observeObj(data[i]);
 				observed.push(observeObj(data[i]));
 			}
 			return observed;

@@ -78,7 +78,9 @@ for (var i = 0; i < 10000; i++) {
 describe("Make sure performance is good", function () {
 	this.timeout(50000);
 	it("should be able to observe 10000 rows in no less time than the previous run", function (done) {
+
 		var model = blast.observe(sampleData);
+		
 		perf = window._p;
 		Parse.initialize("8xnXEIVSc0KBeeDoEHNXKFPwnqQIVHfewNTNKOIO", "vbk4WiXQDzzBF28UQFeTn6tmxsaM73U9i6qDzqAz");
 		var TestRun = Parse.Object.extend("TestRun");

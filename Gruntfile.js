@@ -56,15 +56,6 @@ module.exports = function( grunt ) {
 				},
 				src: ['test/**/*.js', 'perftest/**/*.js']
 			}
-		},
-		mochaPerfTest: {
-			test: {
-				options: {
-					reporter: 'spec',
-					quiet: false
-				},
-				src: ['perftest/**/*.js']
-			}
 		}
 	});
 	grunt.registerTask('default', ['uglify', 'mochaTest']);
